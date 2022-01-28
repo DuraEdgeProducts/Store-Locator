@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="content">
+      <div id="banner">
+        <img src="./assets/DuraEdge_Header.png"/>
+        <div id="banner-divider"></div>
+        <h1>Store Locator</h1>
+      </div>
+      <div id="map" class="map"></div>
+      <div class="input-content">
+        <label>Zip Code: </label>
+        <input type="text" id="zip-input">
+        <button onclick="onLocateByZip()">Locate By Zip Code</button>
+        <br/>
+        <h2>Or</h2>
+        <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+      </div>
+      <div class="dividing-line"></div>
+      <div class="location-options" id="location-options"></div>
+      <footer>
+        <p>© 2022 DuraEdge Products Inc., All Rights Reserved</p>
+      </footer>
+    </div>
+    <script type="text/javascript" src="./js/index.js"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw&callback=initMap"></script>
+  </body>
+</html>
