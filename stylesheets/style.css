@@ -19,10 +19,14 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
 .input-content {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin-top: 3%;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 .input-content label {
   font-size: 22px;
@@ -48,9 +52,11 @@ html, body {
 }
 .input-content h2 {
   font-weight: lighter;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 .location-options {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Arial', sans-serif;
   width: 60%;
   margin-left: auto;
   margin-right: auto;
@@ -80,7 +86,7 @@ html, body {
 }
 
 .dividing-line {
-  background-color: rgb(85,40,13);
+  background-color: rgb(181, 90, 49);
   width: 70%;
   height: 3px;
   margin-top: 30px;
@@ -104,7 +110,7 @@ html, body {
 }
 
 #banner h1 {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Arial', sans-serif;
   text-align: center;
 }
 
@@ -194,7 +200,7 @@ footer {
   justify-content: center;
   margin-top: auto;
   background-color: rgb(181, 90, 49);
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Arial', sans-serif;
   text-align: center;
   color: white;
   margin-top: 1%;

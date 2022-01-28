@@ -98,6 +98,8 @@ async function onLocateByZip() {
   gotoLocations(locationsData);
   clearLocations();
   displayLocations(locationsData);
+  const map = document.getElementById('map');
+  map.scrollIntoView();
 }
 
 function onLocateByGeoLocation() {
@@ -111,6 +113,8 @@ function onLocateByGeoLocation() {
     gotoLocations(locationsData);
     clearLocations();
     displayLocations(locationsData);
+    const map = document.getElementById('map');
+    map.scrollIntoView();
   }
   let geoError = (error) => {
     console.error(error);
@@ -164,7 +168,7 @@ function generateLocationCard(location) {
   locationAddressInfo.appendChild(streetAddress);
   locationAddressInfo.appendChild(localityAddress);
   locationAddressInfo.appendChild(googleMapsLink);
-  
+
   container.appendChild(icon);
   container.appendChild(locationAddressInfo);
   return container;
