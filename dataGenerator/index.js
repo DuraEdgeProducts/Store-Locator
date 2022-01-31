@@ -1,6 +1,6 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
-const data = fs.readFileSync('../data/MasterLocations.csv', 'utf8');
+const data = fs.readFileSync('../public/data/MasterLocations.csv', 'utf8');
 const locationData = data.split('\n');
 const locations = [];
 
@@ -22,15 +22,12 @@ function initLocations() {
         lng: 0
       }
     };
-    //location.coords = await getLatLongFromAddress(location.streetNumber, location.route, location.locality, location.state);
-    //console.log('location ' + i);
     locations.push(location);
   }
   console.log(locations.length);
 }
 
 async function getLatLongFromAddress(streetNumber, route, locality, state, index) {
-  // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`;
   const res = await fetch(url);
   const data = await res.json();
@@ -39,7 +36,6 @@ async function getLatLongFromAddress(streetNumber, route, locality, state, index
   } catch(e) {
     console.log('Locating geometry failed');
   }
-  //fs.writeFile('../data/masterlocations.json', JSON.stringify(locations[index]), {flag: 'a+'}, err => {console.log(err)});
 }
 
 async function generateLocationCoords() {
@@ -47,7 +43,7 @@ async function generateLocationCoords() {
     await getLatLongFromAddress(locations[i].streetNumber, locations[i].route, locations[i].locality, locations[i].state, i);
     console.log('location: ' + i);
   }
-  fs.writeFileSync('../data/masterlocations.json', JSON.stringify(locations), {flag: 'a+'}, err => {console.log(err)});
+  fs.writeFileSync('../public/data/MasterLocations.json', JSON.stringify(locations), {flag: 'a+'}, err => {console.log(err)});
 }
 
 initLocations();

@@ -1,4 +1,6 @@
-window.onload = async function() {
+window.onload = loadLocationsFromJSON;
+
+async function loadLocationsFromCSV() {
   window.locations = [];
   const res = await fetch('../data/MasterLocations.csv', {mode: 'no-cors'});
   let data = await res.text();
@@ -33,6 +35,14 @@ window.onload = async function() {
   });
 }
 
+async function loadLocationsFromJSON() {
+  window.locations = [];
+  const res = await fetch('../data/MasterLocations.json', {mode: 'no-cors'});
+  let data = await res.json();
+  window.locations = data;
+  console.log(window.locations);
+}
+
 // callback function for initiating the map
 function initMap() {
   let mapProp = {
@@ -65,7 +75,7 @@ async function getLatLongFromZip(zip) {
 }
 
 // returns the latitiude and longitude from a street address
-async function getLatLongFromAddress({streetNumber, route, locality, state}) {
+async function getLatLongFromAddress(streetNumber, route, locality, state) {
   // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`;
   const res = await fetch(url);
@@ -117,7 +127,7 @@ function testSort() {
 async function onLocateByZip() {
   const zip = document.getElementById('zip-input').value;
   const currentLocationCoords = await getLatLongFromZip(zip);
-  const locationsData = readDataJSON();
+  const locationsData = window.locations;
   quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
   gotoLocations(locationsData);
   clearLocations();
@@ -132,7 +142,7 @@ function onLocateByGeoLocation() {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    const locationsData = readDataJSON();
+    const locationsData = window.locations;
     quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
     gotoLocations(locationsData);
     clearLocations();
