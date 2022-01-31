@@ -1,12 +1,36 @@
-// the list of location objects
-let locations = [];
-
-function createLocationObjects(filename) {
-  const response = fetch(filename).then(res => res.text()).then(data => console.log(data)).catch(err => console.error(err));
-}
-
-window.onload = function() {
-
+window.onload = async function() {
+  window.locations = [];
+  const res = await fetch('../data/MasterLocations.csv', {mode: 'no-cors'});
+  let data = await res.text();
+  data = data.split('\n');
+  data.shift();
+  data.pop();
+  data.forEach((item, i) => {
+    const storeInfo = item.split(',');
+    const location = {
+      name: storeInfo[0],
+      locality: storeInfo[2],
+      state: storeInfo[3],
+      zipcode: storeInfo[4],
+      streetNumber: storeInfo[5],
+      route: storeInfo[6],
+      aptSuite: storeInfo[7],
+      website: storeInfo[8],
+      phoneNum: storeInfo[11],
+      coords: {
+        lat: 0,
+        lng: 0
+      }
+    };
+    window.locations.push(location);
+  });
+  // get the coordinates from the address
+  for(let i = 0; i < locations.length; i++) {
+    window.locations[i].coords = await getLatLongFromAddress(window.locations[i].streetNumber, window.locations[i].route, window.locations[i].locality, window.locations[i].state);
+  }
+  window.locations.forEach((item, i) => {
+    console.log(item);
+  });
 }
 
 // callback function for initiating the map

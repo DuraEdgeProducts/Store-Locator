@@ -1,0 +1,14 @@
+{
+  "name": "storelocatorhost",
+  "version": "1.0.0",
+  "description": "test server for hosting the store locator app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Poper",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
