@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <label>Upload CSV File</label>
+    <input type="file" id="file-upload"/>
+    <button onclick="convertToJSON()">Convert to JSON</button>
+    <script>
+      async function convertToJSON() {
+        const file = document.getElementById('file-upload').files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const csvText = reader.result;
+          const lines = csvText.split('\n');
+          const locations = [];
+          lines.forEach((item, i) => {
+            const storeInfo = item.split(',');
+            const location = {
+              name: storeInfo[0],
+              locality: storeInfo[2],
+              state: storeInfo[3],
+              zipcode: storeInfo[4],
+              streetNumber: storeInfo[5],
+              route: storeInfo[6],
+              aptSuite: storeInfo[7],
+              website: storeInfo[8],
+              salesRep: storeInfo[10],
+              phoneNum: storeInfo[11],
+              coords: {
+                lat: 0,
+                lng: 0
+              }
+            };
+            locations.push(location);
+          });
+          locations.shift();
+          locations.pop();
+          for(let i = 0; i < locations.length; i++) {
+            locations[i].coords = await getLatLongFromAddress(locations[i].streetNumber, locations[i].route, locations[i].locality, locations[i].state);
+          }
+          const hiddenAnchor = document.createElement('a');
+          const jsonText = JSON.stringify(locations);
+          const blob = new Blob([jsonText], {
+            type: 'text/json'
+          });
+          hiddenAnchor.href = URL.createObjectURL(blob);
+          hiddenAnchor.download = 'MasterLocations.json';
+          hiddenAnchor.click();
+        };
+        reader.readAsText(file);
+      }
+      async function getLatLongFromAddress(streetNumber, route, locality, state) {
+        // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.results[0].geometry.location;
+      }
+    </script>
+  </body>
+</html>

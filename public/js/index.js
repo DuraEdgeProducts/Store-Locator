@@ -1,4 +1,4 @@
-window.onload = loadLocationsFromJSON;
+window.onload = loadLocationsFromCSV;
 
 async function loadLocationsFromCSV() {
   window.locations = [];
@@ -18,6 +18,7 @@ async function loadLocationsFromCSV() {
       route: storeInfo[6],
       aptSuite: storeInfo[7],
       website: storeInfo[8],
+      salesRep: storeInfo[10],
       phoneNum: storeInfo[11],
       coords: {
         lat: 0,
@@ -184,25 +185,27 @@ function generateLocationCard(location) {
   icon.src = './assets/map_marker.png';
   const name = document.createElement("h2");
   name.textContent = location.name;
-  const streetAddress = document.createElement("p");
-  streetAddress.textContent = `${location.streetNumber} ${location.route} ${location.aptSuite}`;
-  const localityAddress = document.createElement("p");
-  localityAddress.textContent = `${location.locality}, ${location.state}, ${location.zipcode}`;
+  const address = document.createElement("p");
+  const streetAddress = `${location.streetNumber} ${location.route} ${location.aptSuite}`;
+  address.textContent = streetAddress;
+  const localityAddress = `${location.locality}, ${location.state}, ${location.zipcode}`;
+  address.textContent += localityAddress
   const website = document.createElement("a");
   website.textContent = location.website;
   website.href = `http://${location.website}`;
   website.target = '_blank';
-  const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${streetAddress.textContent}, ${localityAddress.textContent}`;
+  const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${streetAddress}, ${localityAddress}`;
   const googleMapsLink = document.createElement("a");
   googleMapsLink.href = googleMapsURL;
   googleMapsLink.textContent = "   View in Google Maps";
   googleMapsLink.target = '_blank';
+  const contact = document.createElement("p");
+  contact.textContent = `Contact Sales Rep: ${location.salesRep}, ${location.phoneNum}`;
   locationAddressInfo.appendChild(name);
   locationAddressInfo.appendChild(website);
-  locationAddressInfo.appendChild(streetAddress);
-  locationAddressInfo.appendChild(localityAddress);
+  locationAddressInfo.appendChild(address);
   locationAddressInfo.appendChild(googleMapsLink);
-
+  locationAddressInfo.appendChild(contact);
   container.appendChild(icon);
   container.appendChild(locationAddressInfo);
   return container;
