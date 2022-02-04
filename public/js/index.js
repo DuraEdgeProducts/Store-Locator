@@ -1,5 +1,13 @@
-window.onload = loadLocationsFromCSV;
+/*
+  Author: Adam Poper
+  Organization: DuraEdge Products, Inc.
+  Name of File: index.js
+  Purpose: this file contains all the functionality for the store locator application
+*/
 
+window.onload = loadLocationsFromJSON;
+
+// loads data from a CSV file which is slower because it must make all the api requests every time the app is loaded
 async function loadLocationsFromCSV() {
   window.locations = [];
   const res = await fetch('../data/MasterLocations.csv', {mode: 'no-cors'});
@@ -36,6 +44,8 @@ async function loadLocationsFromCSV() {
   });
 }
 
+// loads the data from a json file called MasterLocations.json which can be generated using the file-converter app
+// this is much faster because there are no calls to the google maps api when the app loads
 async function loadLocationsFromJSON() {
   window.locations = [];
   const res = await fetch('../data/MasterLocations.json', {mode: 'no-cors'});
@@ -75,7 +85,7 @@ async function getLatLongFromZip(zip) {
   return location;
 }
 
-// returns the latitiude and longitude from a street address
+// returns the latitude and longitude from a street address
 async function getLatLongFromAddress(streetNumber, route, locality, state) {
   // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`;
@@ -84,12 +94,14 @@ async function getLatLongFromAddress(streetNumber, route, locality, state) {
   return data.results[0].geometry.location;
 }
 
+// the swap function for the quicksort algorithm
 function swap(data, x, y) {
   let temp = data[x];
   data[x] = data[y];
   data[y] = temp;
 }
 
+// the partition function for the quick sort algorithm
 function partition(currentCoords, data, low, high) {
   let pivot = data[high];
   let i = low - 1;
@@ -109,19 +121,13 @@ function partition(currentCoords, data, low, high) {
   return i + 1;
 }
 
+// this program utilizes the quick sort sorting algorithm for finding the closest locations to the user
 function quickSort(currentCoords, data, low, high) {
   if(low < high) {
     let pi = partition(currentCoords, data, low, high);
-
     quickSort(currentCoords, data, low, pi-1);
     quickSort(currentCoords, data, pi+1, high);
   }
-}
-
-function testSort() {
-  let nums = [4, 10, 7, 11, 2, 9, 6, 5, 8];
-  quickSort(nums, 0, nums.length-1);
-  console.log(nums);
 }
 
 // gets coordinates and goes to map location when locate button is clicked
@@ -137,6 +143,7 @@ async function onLocateByZip() {
   map.scrollIntoView();
 }
 
+// called when the user wishes to locate the nearest store based on their current location
 function onLocateByGeoLocation() {
   let geoSuccess = (position) => {
     const currentLocationCoords = {
@@ -161,6 +168,7 @@ function onLocateByGeoLocation() {
   }
 }
 
+// adds the location cards to the document
 function displayLocations(locations) {
   const locationOptions = document.getElementById('location-options');
   for(let i = 0; i < 5; i++) {
@@ -169,6 +177,7 @@ function displayLocations(locations) {
   }
 }
 
+// clears the location cards from the screen to prepare for the next query
 function clearLocations() {
   const locationOptions = document.getElementById('location-options');
   while(locationOptions.lastChild) {
@@ -176,6 +185,7 @@ function clearLocations() {
   }
 }
 
+// generates a location card based on the information in the location json object
 function generateLocationCard(location) {
   const container = document.createElement("div");
   container.className = 'location-card';
@@ -211,35 +221,6 @@ function generateLocationCard(location) {
   return container;
 }
 
-// test function only
-function testDistance() {
-  const coords1 = {
-    lat1: 40.4465039,
-    lon1: -75.8824422
-  }
-  const coords2 = {
-    lat2: 41.0330673,
-    lon2: -80.0758425
-  }
-  const distanceKilos = getDistanceFromLatLonInKm(coords1, coords2);
-  console.log(distanceKilos);
-}
-// test function only
-async function testAddress() {
-  const address = {
-    streetNumber: 1600,
-    route: 'Amphiteatre Parkway',
-    locality: 'Mountain View',
-    state: 'CA'
-  };
-  const location = await getLatLongFromAddress(address);
-  console.log(location);
-}
-// test function only
-function testFileRead() {
-  const data = readDataJSON();
-  console.log(data);
-}
 // the following code was retrieved from https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
 // used for calculating the distance in kilometers from two coordinates
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
