@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+
+  </body>
+  <script>
+    function fetchData() {
+      fetch('https://duraedge.com/storelocator/data/MasterLocations.json', {mode: 'no-cors'}).then(res => res.json()).then(data => console.log(data)).catch(err => console.error(err));
+    }
+    window.onload = fetchData;
+  </script>
+</html>
