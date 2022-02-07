@@ -10,6 +10,7 @@ window.onload = loadLocationsFromJSON;
 */
 
 // loads data from a CSV file which is slower because it must make all the api requests every time the app is loaded
+/*
 async function loadLocationsFromCSV() {
   window.locations = [];
   const res = await fetch('../data/MasterLocations.csv', {mode: 'no-cors'});
@@ -45,9 +46,10 @@ async function loadLocationsFromCSV() {
     console.log(item);
   });
 }
-
+*/
 // loads the data from a json file called MasterLocations.json which can be generated using the file-converter app
 // this is much faster because there are no calls to the google maps api when the app loads
+/*
 async function loadLocationsFromJSON() {
   window.locations = [];
   const res = await fetch('https://duraedge.com/storelocator/data/MasterLocations.json', {mode: 'no-cors'});
@@ -55,6 +57,7 @@ async function loadLocationsFromJSON() {
   window.locations = data;
   console.log(window.locations);
 }
+*/
 
 // callback function for initiating the map
 function initMap() {
