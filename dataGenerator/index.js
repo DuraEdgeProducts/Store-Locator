@@ -1,15 +1,18 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
-const data = fs.readFileSync('public/data/BulkProductLocations.csv', 'utf8');
-const locationData = data.split('\n');
-const locations = [];
+// const data = fs.readFileSync('public/data/BulkProductLocations.csv', 'utf8');
+// const locationData = data.split('\n');
+// const locations = [];
 const express = require('express');
 const app = express();
-// app.listen(3001, () => {
-//   console.log('listening on port 3001');
-// });
+app.listen(3001, () => {
+  console.log('listening on port 3001');
+});
 app.use(express.static('public'));
-
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+});
 function initLocations() {
   for(let i = 1; i < locationData.length; i++) {
     const storeInfo = locationData[i].split(',');
@@ -53,5 +56,5 @@ async function generateLocationCoords() {
   fs.writeFileSync('../public/data/BulkProductLocations.json', JSON.stringify(locations), {flag: 'a+'}, err => {console.log(err)});
 }
 
-initLocations();
-generateLocationCoords();
+// initLocations();
+// generateLocationCoords();
