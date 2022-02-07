@@ -48,7 +48,7 @@ async function loadLocationsFromCSV() {
 // this is much faster because there are no calls to the google maps api when the app loads
 async function loadLocationsFromJSON() {
   window.locations = [];
-  const res = await fetch('../data/MasterLocations.json', {mode: 'no-cors'});
+  const res = await fetch('https://duraedge.com/storelocator/data/MasterLocations.json', {mode: 'no-cors'});
   let data = await res.json();
   window.locations = data;
   console.log(window.locations);
