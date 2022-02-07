@@ -85,6 +85,18 @@ html, body {
   color: black;
 }
 
+.nearest-distributor-card {
+  background-color: #F2EDED;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+}
+
+.nearest-distributor-card a {
+  color: black;
+}
+
 .dividing-line {
   background-color: rgb(181, 90, 49);
   width: 70%;

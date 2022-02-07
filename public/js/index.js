@@ -9,8 +9,13 @@
 window.onload = loadLocationsFromJSON;
 */
 
+const StoreType = {
+  Store: 'store',
+  Bulk: 'bulk'
+}
+
 // loads data from a CSV file which is slower because it must make all the api requests every time the app is loaded
-/*
+
 async function loadLocationsFromCSV() {
   window.locations = [];
   const res = await fetch('../data/MasterLocations.csv', {mode: 'no-cors'});
@@ -46,10 +51,10 @@ async function loadLocationsFromCSV() {
     console.log(item);
   });
 }
-*/
+
 // loads the data from a json file called MasterLocations.json which can be generated using the file-converter app
 // this is much faster because there are no calls to the google maps api when the app loads
-/*
+
 async function loadLocationsFromJSON() {
   window.locations = [];
   const res = await fetch('https://duraedge.com/storelocator/data/MasterLocations.json', {mode: 'no-cors'});
@@ -57,7 +62,7 @@ async function loadLocationsFromJSON() {
   window.locations = data;
   console.log(window.locations);
 }
-*/
+
 
 // callback function for initiating the map
 function initMap() {
@@ -135,35 +140,77 @@ function quickSort(currentCoords, data, low, high) {
   }
 }
 
+function onStoreLocateByZip() {
+  onLocateByZip(StoreType.Store);
+}
+
+function onBulkLocateByZip() {
+  onLocateByZip(StoreType.Bulk);
+}
+
 // gets coordinates and goes to map location when locate button is clicked
-async function onLocateByZip() {
-  window.locations = readStaticStoreDataJSON();
+async function onLocateByZip(type) {
   const zip = document.getElementById('zip-input').value;
   const currentLocationCoords = await getLatLongFromZip(zip);
-  const locationsData = window.locations;
-  quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-  gotoLocations(locationsData);
-  clearLocations();
-  displayLocations(locationsData);
-  const map = document.getElementById('map');
-  map.scrollIntoView();
+  switch(type) {
+    case StoreType.Store: {
+      window.locations = readStaticStoreDataJSON();
+      const locationsData = window.locations;
+      quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+      gotoLocations(locationsData);
+      clearLocations();
+      displayLocations(locationsData);
+      const map = document.getElementById('map');
+      map.scrollIntoView();
+    }
+    break;
+    case StoreType.Bulk: {
+      window.locations = readStaticBulkDataJSON();
+      const locationsData = window.locations;
+      quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+      clearNearestBulkLocation();
+      displayNearestDistributorLocation(locationsData[0]);
+    }
+  }
+}
+
+function onStoreLocateByGeoLocation() {
+  onLocateByGeoLocation(StoreType.Store);
+}
+
+function onBulkLocateByGeoLocation() {
+  onLocateByGeoLocation(StoreType.Bulk);
 }
 
 // called when the user wishes to locate the nearest store based on their current location
-function onLocateByGeoLocation() {
+function onLocateByGeoLocation(type) {
   let geoSuccess = (position) => {
     const currentLocationCoords = {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    window.locations = readStaticStoreDataJSON();
-    const locationsData = window.locations;
-    quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-    gotoLocations(locationsData);
-    clearLocations();
-    displayLocations(locationsData);
-    const map = document.getElementById('map');
-    map.scrollIntoView();
+    switch(type) {
+      case StoreType.Store: {
+        window.locations = readStaticStoreDataJSON();
+        const locationsData = window.locations;
+        quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+        gotoLocations(locationsData);
+        clearLocations();
+        displayLocations(locationsData);
+        const map = document.getElementById('map');
+        map.scrollIntoView();
+      }
+      break;
+      case StoreType.Bulk: {
+        console.log('Bulk');
+        window.locations = readStaticBulkDataJSON();
+        const locationsData = window.locations;
+        quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+        clearNearestBulkLocation();
+        displayNearestDistributorLocation(locationsData[0]);
+      }
+      break;
+    }
   }
   let geoError = (error) => {
     console.error(error);
@@ -184,12 +231,24 @@ function displayLocations(locations) {
   }
 }
 
+function displayNearestDistributorLocation(location) {
+  const locationDisplay = document.getElementById('nearest-bulk-location');
+  const locationCard = generateNearestDistributorInfo(location);
+  locationDisplay.appendChild(locationCard);
+}
+
 // clears the location cards from the screen to prepare for the next query
 function clearLocations() {
   const locationOptions = document.getElementById('location-options');
   while(locationOptions.lastChild) {
     locationOptions.removeChild(locationOptions.lastChild);
   }
+}
+
+function clearNearestBulkLocation() {
+  const nearestBulkLocation = document.getElementById('nearest-bulk-location');
+  if(nearestBulkLocation.lastChild)
+    nearestBulkLocation.removeChild(nearestBulkLocation.lastChild);
 }
 
 // generates a location card based on the information in the location json object
@@ -225,6 +284,32 @@ function generateLocationCard(location) {
   locationAddressInfo.appendChild(contact);
   container.appendChild(icon);
   container.appendChild(locationAddressInfo);
+  return container;
+}
+
+function generateNearestDistributorInfo(location) {
+  const container = document.createElement('div');
+  container.className = 'nearest-distributor-card';
+  const rep = document.createElement('h1');
+  rep.textContent = location.rep;
+  const email = document.createElement('p');
+  email.textContent = location.email;
+  const phoneNumber = document.createElement('p');
+  phoneNumber.textContent = location.phoneNum;
+  const name = document.createElement('p');
+  name.textContent = location.name;
+  const address = document.createElement('a');
+  const streetAddress = `${location.streetNumber} ${location.route}`;
+  const localityAddress = `${location.locality}, ${location.state}, ${location.zipcode}`;
+  address.textContent = `${streetAddress} ${localityAddress}`;
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${streetAddress}, ${localityAddress}`;
+  address.href = googleMapsLink;
+  address.target = '_blank';
+  container.appendChild(rep);
+  container.appendChild(email);
+  container.appendChild(phoneNumber);
+  container.appendChild(name);
+  container.appendChild(address);
   return container;
 }
 
@@ -2459,4 +2544,159 @@ function readStaticStoreDataJSON() {
       }
     }
   ];
+}
+
+function readStaticBulkDataJSON() {
+  return [
+    {
+      "name": "DuraEdge Andover",
+      "locality": "Andover",
+      "streetNumber": "50",
+      "route": "Airport Rd",
+      "state": "NJ",
+      "zipcode": "07821",
+      "rep": "Patrick Coakley",
+      "phoneNum": "724-870-4625",
+      "email": "pcoakley@duraedge.com",
+      "coords": {
+        "lat": 40.9614139,
+        "lng": -74.78493759999999
+      }
+    },
+    {
+      "name": "DuraEdge Farmington",
+      "locality": "Farmington",
+      "streetNumber": "105",
+      "route": "Brickyard Rd",
+      "state": "CT",
+      "zipcode": "06032",
+      "rep": "Greg Frederick",
+      "phoneNum": "724-870-4480",
+      "email": "gfrederick@duraedge.com",
+      "coords": {
+        "lat": 41.7477606,
+        "lng": -72.8538326
+      }
+    },
+    {
+      "name": "DuraEdge Granite City",
+      "locality": "Granite City",
+      "streetNumber": "480",
+      "route": "Bissel St",
+      "state": "IL",
+      "zipcode": "62040",
+      "rep": "Coby Schmucker",
+      "phoneNum": "724-870-4425",
+      "email": "cschmucker@duraedge.com",
+      "coords": {
+        "lat": 38.6810557,
+        "lng": -90.17645929999999
+      }
+    },
+    {
+      "name": "DuraEdge Hudson",
+      "locality": "Hudson",
+      "streetNumber": "393",
+      "route": "South Meridian Rd",
+      "state": "MI",
+      "zipcode": "49247",
+      "rep": "Coby Schmucker",
+      "phoneNum": "724-870-4425",
+      "email": "cschmucker@duraedge.com",
+      "coords": {
+        "lat": 41.870382,
+        "lng": -84.36125299999999
+      }
+    },
+    {
+      "name": "DuraEdge Milan",
+      "locality": "Rock Island",
+      "streetNumber": "8000",
+      "route": "31 St West",
+      "state": "IL",
+      "zipcode": "61264",
+      "rep": "Jon Brinkerhoff",
+      "phoneNum": "724-870-4425",
+      "email": "jbrinkerhoff@duraedge.com",
+      "coords": {
+        "lat": 41.44143090000001,
+        "lng": -90.61146099999999
+      }
+    },
+    {
+      "name": "DuraEdge Ogden",
+      "locality": "Ogden",
+      "streetNumber": "1070",
+      "route": "Century Dr",
+      "state": "UT",
+      "zipcode": "84403",
+      "rep": "Jamie Farquhar",
+      "phoneNum": "724-870-4375",
+      "email": "jfarquhar@duraedge.com",
+      "coords": {
+        "lat": 41.2460826,
+        "lng": -111.9879035
+      }
+    },
+    {
+      "name": "DuraEdge Slippery Rock",
+      "locality": "Slippery Rock",
+      "streetNumber": "4783",
+      "route": "Harlansburg Rd",
+      "state": "PA",
+      "zipcode": "16057",
+      "rep": "Jacob Anderson",
+      "phoneNum": "724-870-4250",
+      "email": "janderson@duraedge.com",
+      "coords": {
+        "lat": 41.0350149,
+        "lng": -80.14403589999999
+      }
+    },
+    {
+      "name": "DuraEdge Wrentham",
+      "locality": "Wrentham",
+      "streetNumber": "35",
+      "route": "Cushing Dr",
+      "state": "MA",
+      "zipcode": "02093",
+      "rep": "Greg Frederick",
+      "phoneNum": "724-870-4480",
+      "email": "gfrederick@duraedge.com",
+      "coords": {
+        "lat": 42.0846726,
+        "lng": -71.29878889999999
+      }
+    },
+    {
+      "name": "DuraEdge Vero Beach",
+      "locality": "Vero Beach",
+      "streetNumber": "3505",
+      "route": "65th St",
+      "state": "FL",
+      "zipcode": "32960",
+      "rep": "Mike Viersma",
+      "phoneNum": "724-870-4445",
+      "email": "mviersma@duraedge.com",
+      "coords": {
+        "lat": 27.7110099,
+        "lng": -80.42200280000002
+      }
+    },
+    {
+      "name": "DuraEdge Phoenix",
+      "locality": "Glendale",
+      "streetNumber": "7243",
+      "route": "N. El Mirage Rd",
+      "state": "AZ",
+      "zipcode": "85307",
+      "rep": "Eric Godfrey",
+      "phoneNum": "724-870-4828",
+      "email": "djennings@duraedge.com",
+      "coords": {
+        "lat": 33.541079,
+        "lng": -112.3236366
+      }
+    }
+  ]
 }

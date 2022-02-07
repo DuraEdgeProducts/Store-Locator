@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Bulk Product Distributors</title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+  </head>
+  <body>
+    <div class="content">
+      <div id="banner">
+        <img src="./assets/DuraEdge_Header.png"/>
+        <div id="banner-divider"></div>
+        <h1>Find Your Bulk Product Distributor</h1>
+        <div class="input-content">
+          <label>Zip Code: </label>
+          <input type="text" id="zip-input">
+          <button onclick="onBulkLocateByZip()">Locate By Zip Code</button>
+          <h2>Or</h2>
+          <button onclick="onBulkLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+        </div>
+        <div id="nearest-bulk-location">
+
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>© 2022 DuraEdge Products Inc., All Rights Reserved</p>
+    </footer>
+    <script type="text/javascript" src="./js/index.js"></script>
+  </body>
+</html>
