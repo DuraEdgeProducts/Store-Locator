@@ -290,14 +290,14 @@ function generateLocationCard(location) {
 function generateNearestDistributorInfo(location) {
   const container = document.createElement('div');
   container.className = 'nearest-distributor-card';
-  const rep = document.createElement('h1');
-  rep.textContent = location.rep;
+  const name = document.createElement('h1');
+  name.textContent = location.name;
   const email = document.createElement('p');
   email.textContent = location.email;
   const phoneNumber = document.createElement('p');
   phoneNumber.textContent = location.phoneNum;
-  const name = document.createElement('p');
-  name.textContent = location.name;
+  const rep = document.createElement('p');
+  rep.textContent = location.rep;
   const address = document.createElement('a');
   const streetAddress = `${location.streetNumber} ${location.route}`;
   const localityAddress = `${location.locality}, ${location.state}, ${location.zipcode}`;
@@ -305,11 +305,11 @@ function generateNearestDistributorInfo(location) {
   const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${streetAddress}, ${localityAddress}`;
   address.href = googleMapsLink;
   address.target = '_blank';
+  container.appendChild(name);
+  container.appendChild(address);
   container.appendChild(rep);
   container.appendChild(email);
   container.appendChild(phoneNumber);
-  container.appendChild(name);
-  container.appendChild(address);
   return container;
 }
 
