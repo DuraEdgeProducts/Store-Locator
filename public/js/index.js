@@ -25,8 +25,8 @@ async function loadLocationsFromJSON() {
 
 // callback function for initiating the map
 function initMap() {
-  let mapProp = {
-    center: new google.maps.LatLng(40.730610,-73.935242),
+  let mapProp = {   // initialize the map to Slippery Rock, PA
+    center: new google.maps.LatLng(41.063951,-80.056447),
     zoom: 8
   };
   let map = new google.maps.Map(document.getElementById('map'), mapProp);
