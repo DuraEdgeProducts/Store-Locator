@@ -1,4 +1,4 @@
-<!-- 
+<!--
   Author: Adam Poper
   Organization: DuraEdge Products, Inc.
   Name of File: file-converter.html
@@ -14,9 +14,16 @@
   <body>
     <label>Upload CSV File</label>
     <input type="file" id="file-upload"/>
-    <button onclick="convertToJSON()">Convert to JSON</button>
-    <script>      
-      function convertToJSON() {
+    <button onclick="convertStoreDataToJSON()">Convert Store Data to JSON</button>
+    <button onclick="convertBulkDataToJSON()">Convert Bulk Product Data to JSON</button>
+    <script>
+      function convertStoreDataToJSON() {
+        convertDataToJSON('MasterLocations.json');
+      }
+      function convertBulkDataToJSON() {
+        convertDataToJSON('BulkProductLocations.json');
+      }
+      function convertDataToJSON(filename) {
         const file = document.getElementById('file-upload').files[0];
         const reader = new FileReader();
         reader.onload = () => {
@@ -55,44 +62,44 @@
               type: 'text/json'
             });
             hiddenAnchor.href = URL.createObjectURL(blob);
-            hiddenAnchor.download = 'MasterLocations.json';
-            hiddenAnchor.click(); 
-          });          
+            hiddenAnchor.download = filename;
+            hiddenAnchor.click();
+          });
         };
         reader.readAsText(file);
       }
-      
+
       // generates the coordinates for each of the locations
       // sometimes the google api doesn't return a result, so it tries 3 times to get the location coords if the google api doesn't return a result
       function generateLocationCoords(locations) {
         return Promise.all(locations.map((location, index) => fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
             ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
             .then(res => res.json())
-            .then(data => { 
+            .then(data => {
               try{
                 locations[index].coords = data.results[0].geometry.location;
               } catch(e) {
-                console.log('trying again');
-                fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
-                ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
-                .then(res => res.json())
-                .then(data => {
-                  try{
-                    locations[index].coords = data.results[0].geometry.location;
-                  } catch(e1) {
-                    fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
-                    ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
-                    .then(res => res.json())
-                    .then(data => {
-                      try{
-                        locations[index].coords = data.results[0].geometry.location;
-                      } catch(e2) {
-                        console.error(e2);                    
+                  console.log('trying again');
+                  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
+                  ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+                  .then(res => res.json())
+                  .then(data => {
+                    try{
+                      locations[index].coords = data.results[0].geometry.location;
+                    } catch(e1) {
+                      fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
+                      ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+                      .then(res => res.json())
+                      .then(data => {
+                        try{
+                          locations[index].coords = data.results[0].geometry.location;
+                        } catch(e2) {
+                          console.error(e2);
                       }
-                    })                    
+                    })
                   }
                 })
-              }                          
+              }
             })
           )
         );
