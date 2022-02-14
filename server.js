@@ -8,3 +8,6 @@ app.listen(PORT, () => {
 });
 
 app.use(express.static('public'));
+app.get('/bulk-product-distributor', (req, res) => {
+  res.sendFile(__dirname + '/public/bulk-product.html');
+})

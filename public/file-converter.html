@@ -21,7 +21,38 @@
         convertDataToJSON('MasterLocations.json');
       }
       function convertBulkDataToJSON() {
-        convertDataToJSON('BulkProductLocations.json');
+        const file = document.getElementById('file-upload').files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const csvText = reader.result;
+          const lines = csvText.split('\n');
+          console.log(lines);
+          lines.shift();
+          zipCodeLocations = [];
+          lines.forEach((item, i) => {
+            const locationData = item.split(',');
+            const data = {
+              zipcode: locationData[0],
+              county: locationData[1],
+              zone: locationData[2],
+              region: locationData[3],
+              state: locationData[4],
+              accountManager: locationData[5],
+              phone: locationData[6],
+              email: locationData[7],
+            };
+            zipCodeLocations.push(data);
+          });
+          const hiddenAnchor = document.createElement('a');
+          const jsonText = JSON.stringify(zipCodeLocations);
+          const blob = new Blob([jsonText], {
+            type: 'text/json'
+          });
+          hiddenAnchor.href = URL.createObjectURL(blob);
+          hiddenAnchor.download = 'ZipCodeAccountManagerLookup.json';
+          hiddenAnchor.click();
+        }
+        reader.readAsText(file);
       }
       function convertDataToJSON(filename) {
         const file = document.getElementById('file-upload').files[0];
