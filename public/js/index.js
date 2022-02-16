@@ -45,7 +45,7 @@ async function getLatLongFromZip(zip) {
   const data = await res.json();
   let location;
   try {
-    return await data.results[0].geometry.location;
+    return await data.results[0].geometry.location; // latitude and longitude
   } catch(e) {
       alert('Please Enter a Valid Zip Code');
   }
@@ -151,7 +151,7 @@ function clearLocations() {
   }
 }
 
-// generates a location card based on the information in the location json object
+// generates the html for a location card based on the information in the location json object and returns the container
 function generateLocationCard(location) {
   const container = document.createElement("div");
   container.className = 'location-card';
