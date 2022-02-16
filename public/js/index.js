@@ -9,19 +9,11 @@
 // load all the locations from the files on app start-up
 window.onload = loadLocationsFromJSON;
 
-const StoreType = {
-  Store: 'store',
-  Bulk: 'bulk'
-}
-
 // loads the data from json files called MasterLocations.json and BulkProductLocations.json which can be generated using the file-converter app
 // this is much faster because there are no calls to the google maps api when the app loads
-
 async function loadLocationsFromJSON() {
   window.storeLocations = [];
-  window.bulkLocations = [];
   fetch('./data/MasterLocations.json').then(res => res.json()).then(data => {window.storeLocations = data}).catch(err => console.error(err));
-  fetch('./data/BulkProductLocations.json').then(res => res.json()).then(data => {window.bulkLocations = data}).catch(err => console.error(err));
 }
 
 // callback function for initiating the map
@@ -51,8 +43,12 @@ async function getLatLongFromZip(zip) {
   const url = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw&components=postal_code:" + zip;
   const res = await fetch(url);
   const data = await res.json();
-  const location = await data.results[0].geometry.location;
-  return location;
+  let location;
+  try {
+    return await data.results[0].geometry.location;
+  } catch(e) {
+      alert('Please Enter a Valid Zip Code');
+  }
 }
 
 // returns the latitude and longitude from a street address
@@ -100,72 +96,33 @@ function quickSort(currentCoords, data, low, high) {
   }
 }
 
-function onStoreLocateByZip() {
-  onLocateByZip(StoreType.Store);
-}
-
-function onBulkLocateByZip() {
-  onLocateByZip(StoreType.Bulk);
-}
-
 // gets coordinates and goes to map location when locate button is clicked
-async function onLocateByZip(type) {
+async function onLocateByZip() {
   const zip = document.getElementById('zip-input').value;
   const currentLocationCoords = await getLatLongFromZip(zip);
-  switch(type) {
-    case StoreType.Store: {
-      const locationsData = window.storeLocations;
-      quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-      gotoLocations(locationsData);
-      clearLocations();
-      displayLocations(locationsData);
-      const map = document.getElementById('map');
-      map.scrollIntoView();
-    }
-    break;
-    case StoreType.Bulk: {
-      const locationsData = window.bulkLocations;
-      quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-      clearNearestBulkLocation();
-      displayNearestDistributorLocation(locationsData[0]);
-    }
-  }
-}
-
-function onStoreLocateByGeoLocation() {
-  onLocateByGeoLocation(StoreType.Store);
-}
-
-function onBulkLocateByGeoLocation() {
-  onLocateByGeoLocation(StoreType.Bulk);
+  const locationsData = window.storeLocations;
+  quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+  gotoLocations(locationsData);
+  clearLocations();
+  displayLocations(locationsData);
+  const map = document.getElementById('map');
+  map.scrollIntoView();
 }
 
 // called when the user wishes to locate the nearest store based on their current location
-function onLocateByGeoLocation(type) {
+function onLocateByGeoLocation() {
   let geoSuccess = (position) => {
     const currentLocationCoords = {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    switch(type) {
-      case StoreType.Store: {
-        const locationsData = window.storeLocations;
-        quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-        gotoLocations(locationsData);
-        clearLocations();
-        displayLocations(locationsData);
-        const map = document.getElementById('map');
-        map.scrollIntoView();
-      }
-      break;
-      case StoreType.Bulk: {
-        const locationsData = window.bulkLocations;
-        quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-        clearNearestBulkLocation();
-        displayNearestDistributorLocation(locationsData[0]);
-      }
-      break;
-    }
+    const locationsData = window.storeLocations;
+    quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
+    gotoLocations(locationsData);
+    clearLocations();
+    displayLocations(locationsData);
+    const map = document.getElementById('map');
+    map.scrollIntoView();
   }
   let geoError = (error) => {
     console.error(error);
@@ -186,24 +143,12 @@ function displayLocations(locations) {
   }
 }
 
-function displayNearestDistributorLocation(location) {
-  const locationDisplay = document.getElementById('nearest-bulk-location');
-  const locationCard = generateNearestDistributorInfo(location);
-  locationDisplay.appendChild(locationCard);
-}
-
 // clears the location cards from the screen to prepare for the next query
 function clearLocations() {
   const locationOptions = document.getElementById('location-options');
   while(locationOptions.lastChild) {
     locationOptions.removeChild(locationOptions.lastChild);
   }
-}
-
-function clearNearestBulkLocation() {
-  const nearestBulkLocation = document.getElementById('nearest-bulk-location');
-  if(nearestBulkLocation.lastChild)
-    nearestBulkLocation.removeChild(nearestBulkLocation.lastChild);
 }
 
 // generates a location card based on the information in the location json object
@@ -239,32 +184,6 @@ function generateLocationCard(location) {
   locationAddressInfo.appendChild(contact);
   container.appendChild(icon);
   container.appendChild(locationAddressInfo);
-  return container;
-}
-
-function generateNearestDistributorInfo(location) {
-  const container = document.createElement('div');
-  container.className = 'nearest-distributor-card';
-  const name = document.createElement('h1');
-  name.textContent = location.name;
-  const email = document.createElement('p');
-  email.textContent = location.email;
-  const phoneNumber = document.createElement('p');
-  phoneNumber.textContent = location.phoneNum;
-  const rep = document.createElement('p');
-  rep.textContent = location.salesRep;
-  const address = document.createElement('a');
-  const streetAddress = `${location.streetNumber} ${location.route}`;
-  const localityAddress = `${location.locality}, ${location.state}, ${location.zipcode}`;
-  address.textContent = `${streetAddress} ${localityAddress}`;
-  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${streetAddress}, ${localityAddress}`;
-  address.href = googleMapsLink;
-  address.target = '_blank';
-  container.appendChild(name);
-  container.appendChild(address);
-  container.appendChild(rep);
-  container.appendChild(email);
-  container.appendChild(phoneNumber);
   return container;
 }
 
