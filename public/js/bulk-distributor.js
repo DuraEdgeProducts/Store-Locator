@@ -1,13 +1,15 @@
 /*
-Author: Adam Poper
-Organization: DuraEdge Products Inc.
-Date: 2/16/22
-File: bulk-distributor.js
-Purpose: This file contains all the functionality of the bulk-product Representative lookup app.
+  Author: Adam Poper
+  Organization: DuraEdge Products Inc.
+  Date: 2/16/22
+  File: bulk-distributor.js
+  Purpose: This file contains all the functionality of the bulk-product Representative lookup app.
 */
 
+// load all the data
 window.onload = loadDataJSON;
 
+// read the data from the file
 async function loadDataJSON() {
   window.zipCodeLookupData = [];
   const res = await fetch('./data/ZipCodeAccountManagerLookup.json');
@@ -15,6 +17,7 @@ async function loadDataJSON() {
   window.zipCodeLookupData = data;
 }
 
+// performs a linear search for the rep information with a given zip code
 function lookupZip(zipcode) {
   let found = false;
   window.zipCodeLookupData.forEach((item, i) => {
@@ -23,19 +26,21 @@ function lookupZip(zipcode) {
       clearInfo();
       const infoCard = document.getElementById('bulk-product-info');
       infoCard.appendChild(generateNearestDistributorInfo(item));
-      return;
+      return; // end the loop when the zipcode has been found
     }
   });
-  if(!found) {
+  if(!found) { // if the zipcode was not found
     alert('Please Enter a Valid Zip Code');
   }
 }
 
+// when the uzer wishes to locate by a zip code
 function onLocateByZip() {
   const zipcode = document.getElementById('zip-input').value;
   lookupZip(zipcode);
 }
 
+// when the user wishes to locate by their current location
 function onLocateByGeoLocation() {
   let geoSuccess = (position) => {
     const location = {
@@ -61,6 +66,7 @@ function onLocateByGeoLocation() {
   }
 }
 
+// generate the html to display the information and returns its container
 function generateNearestDistributorInfo(info) {
   const container = document.createElement('div');
   container.className = 'nearest-distributor-card';
@@ -76,6 +82,7 @@ function generateNearestDistributorInfo(info) {
   return container;
 }
 
+// clear what's currently present on the screen to prepare for the next look up
 function clearInfo() {
   const nearestBulkLocation = document.getElementById('bulk-product-info');
   if(nearestBulkLocation.lastChild)
