@@ -8,6 +8,18 @@ async function loadDataJSON() {
   console.log(window.zipCodeLookupData);
 }
 
+function lookupZip(zipcode) {
+  window.zipCodeLookupData.forEach((item, i) => {
+    if(zipcode == item.zipcode) {
+      console.log('Found: ' + JSON.stringify(item));
+      clearInfo();
+      const infoCard = document.getElementById('bulk-product-info');
+      infoCard.appendChild(generateNearestDistributorInfo(item));
+      return;
+    }
+  });
+}
+
 function onLocateByZip() {
   const zipcode = document.getElementById('zip-input').value;
   console.log('Zip Code: ' + zipcode);
@@ -32,10 +44,14 @@ function onLocateByGeoLocation() {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({location}).then(response => {
-      console.log(results[0]);
-    });
+    // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+    .then(res => res.json())
+    .then(data => {
+      const zipcode = data.results[0].address_components[6].short_name; // zipcode
+      lookupZip(zipcode);
+    })
+    .catch(err => console.error(err));
   }
   let geoError = (error) => {
     console.error(error);
