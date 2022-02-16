@@ -1,3 +1,11 @@
+/*
+Author: Adam Poper
+Organization: DuraEdge Products Inc.
+Date: 2/16/22
+File: bulk-distributor.js
+Purpose: This file contains all the functionality of the bulk-product Representative lookup app.
+*/
+
 window.onload = loadDataJSON;
 
 async function loadDataJSON() {
@@ -5,37 +13,27 @@ async function loadDataJSON() {
   const res = await fetch('./data/ZipCodeAccountManagerLookup.json');
   const data = await res.json();
   window.zipCodeLookupData = data;
-  console.log(window.zipCodeLookupData);
 }
 
 function lookupZip(zipcode) {
+  let found = false;
   window.zipCodeLookupData.forEach((item, i) => {
     if(zipcode == item.zipcode) {
-      console.log('Found: ' + JSON.stringify(item));
+      found = true;
       clearInfo();
       const infoCard = document.getElementById('bulk-product-info');
       infoCard.appendChild(generateNearestDistributorInfo(item));
       return;
     }
   });
+  if(!found) {
+    alert('Please Enter a Valid Zip Code');
+  }
 }
 
 function onLocateByZip() {
   const zipcode = document.getElementById('zip-input').value;
-  console.log('Zip Code: ' + zipcode);
-  let found = false;
-  window.zipCodeLookupData.forEach((item, i) => {
-    if(zipcode == item.zipcode) {
-      found = true;
-      console.log('Found: ' + JSON.stringify(item));
-      clearInfo();
-      const infoCard = document.getElementById('bulk-product-info');
-      infoCard.appendChild(generateNearestDistributorInfo(item));
-    }
-  });
-  if(!found) {
-    alert('Please Enter a Valid Zip Code');
-  }
+  lookupZip(zipcode);
 }
 
 function onLocateByGeoLocation() {
