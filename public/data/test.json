@@ -1,0 +1,82 @@
+[
+  {
+    "zipcode": "501",
+    "county": "Suffolk",
+    "zone": "NY-12",
+    "region": "Northeast",
+    "state": "NY",
+    "accountManager": "Greg Frederick",
+    "phone": "(724) 870-4480",
+    "email": "gfrederick@duraedge.com"
+  },
+  {
+    "zipcode": "544",
+    "county": "Suffolk",
+    "zone": "NY-12",
+    "region": "Northeast",
+    "state": "NY",
+    "accountManager": "Greg Frederick",
+    "phone": "(724) 870-4480",
+    "email": "gfrederick@duraedge.com"
+  },
+  {
+    "zipcode": "601",
+    "county": "Adjuntas",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  },
+  {
+    "zipcode": "603",
+    "county": "Aguadilla",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  },
+  {
+    "zipcode": "606",
+    "county": "Maricao",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  },
+  {
+    "zipcode": "612",
+    "county": "Arecibo",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  },
+  {
+    "zipcode": "616",
+    "county": "Arecibo",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  },
+  {
+    "zipcode": "617",
+    "county": "Barceloneta",
+    "zone": "PR-00",
+    "region": "Southeast",
+    "state": "PR",
+    "accountManager": "Chris Wilson",
+    "phone": "(724) 870-4421",
+    "email": "cwilson@duraedge.com"
+  }  
+]

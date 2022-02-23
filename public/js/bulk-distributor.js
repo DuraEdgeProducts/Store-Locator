@@ -12,9 +12,9 @@ window.onload = loadDataJSON;
 // read the data from the file
 async function loadDataJSON() {
   window.zipCodeLookupData = [];
-  const res = await fetch('./data/ZipCodeAccountManagerLookup.json');
-  const data = await res.json();
-  window.zipCodeLookupData = data;
+  fetch('./data/ZipCodeAccountManagerLookup.json', {mode: 'no-cors'})
+  .then(res => res.json()).then(data => {window.zipCodeLookupData = data;})
+  .catch(err => console.error(err));
 }
 
 // performs a linear search for the rep information with a given zip code
