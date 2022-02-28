@@ -13,23 +13,48 @@ window.onload = loadLocationsFromJSON;
 // this is much faster because there are no calls to the google maps api when the app loads
 async function loadLocationsFromJSON() {
   window.storeLocations = [];
-  fetch('./data/MasterLocations.json').then(res => res.json()).then(data => {window.storeLocations = data}).catch(err => console.error(err));
+  fetch('./data/MasterLocations.json').then(res => res.json()).then(data => {window.storeLocations = data; console.log(window.storeLocations.length);}).catch(err => console.error(err));
 }
 
 // callback function for initiating the map
 function initMap() {
   let mapProp = {   // initialize the map to Slippery Rock, PA
     center: new google.maps.LatLng(41.063951,-80.056447),
-    zoom: 8
+    zoom: 4
   };
   let map = new google.maps.Map(document.getElementById('map'), mapProp);
 }
 
 // receives the latitude and longitude and goes to those coordinates on the map
 function gotoLocations(locations) {
+  const numVisibleLocations = 5;//window.storeLocations.length;
+  const calculateZoom = (farthestDistance) => {
+    return (-0.03*furthestDistance) + 20;
+  }
+  let furthestDistance = 0;
+  for(let i = 0; i < numVisibleLocations; i++) {
+    const latlng1 = locations[i].coords;
+    for(let j = 0; j < numVisibleLocations; j++) {
+      const latlng2 = locations[j].coords;
+      const d = getDistanceFromLatLonInKm(latlng1.lat, latlng1.lng, latlng2.lat, latlng2.lng);
+      if(d > furthestDistance) {
+        furthestDistance = d;
+      }
+    }
+  }
+  console.log('furthestDistance: ' + furthestDistance);
+  let avgLat = 0;
+  let avgLng = 0;
+  for(let i = 0; i < numVisibleLocations; i++) {
+    avgLat += locations[i].coords.lat;
+    avgLng += locations[i].coords.lng;
+  }
+  avgLat /= numVisibleLocations;
+  avgLng /= numVisibleLocations;
+  const centerLocation = new google.maps.LatLng(avgLat, avgLng);
   const closestLocation = new google.maps.LatLng(locations[0].coords.lat, locations[0].coords.lng);
-  const map = new google.maps.Map(document.getElementById('map'), {center: closestLocation, zoom: 12});
-  for(let i = 0; i < 5; i++) {
+  const map = new google.maps.Map(document.getElementById('map'), {center: centerLocation, zoom: calculateZoom(furthestDistance)});
+  for(let i = 0; i < numVisibleLocations; i++) {
     let lat = locations[i].coords.lat;
     let lng = locations[i].coords.lng;
     const marker = new google.maps.Marker({
