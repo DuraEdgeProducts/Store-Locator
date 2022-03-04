@@ -1,7 +1,7 @@
 /*
   Author: Adam Poper
   Organization: DuraEdge Products Inc.
-  Date: 2/16/22
+  Date: 3/4/22
   File: bulk-distributor.js
   Purpose: This file contains all the functionality of the bulk-product Representative lookup app.
 */
@@ -12,7 +12,7 @@ window.onload = loadDataJSON;
 // read the data from the file
 async function loadDataJSON() {
   window.zipCodeLookupData = [];
-  fetch('./data/ZipCodeAccountManagerLookup.json', {mode: 'no-cors'})
+  fetch('https://duraedge.com/storelocator/data/ZipCodeAccountManagerLookup.json', {mode: 'no-cors'})
   .then(res => res.json()).then(data => {window.zipCodeLookupData = data;})
   .catch(err => console.error(err));
 }
@@ -70,7 +70,7 @@ function onLocateByGeoLocation() {
 function generateNearestDistributorInfo(info) {
   const container = document.createElement('div');
   container.className = 'nearest-distributor-card';
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.textContent = info.accountManager;
   const email = document.createElement('p');
   email.textContent = info.email;
