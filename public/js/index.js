@@ -43,7 +43,7 @@ function gotoLocations(locations, currentCoords) {
       position: loc,
       map: map
     });
-    bounds.extend(loc);
+    bounds.extend(loc); // extends the map boundaries to fit the new location
   }
   // center and fit the map around all the markers
   map.fitBounds(bounds);
@@ -115,27 +115,29 @@ async function onLocateByZip() {
   gotoLocations(locationsData, currentLocationCoords);
   clearLocations();
   displayLocations(locationsData);
-  const map = document.getElementById('map');
-  map.scrollIntoView();
+  document.getElementById('map').scrollIntoView();
 }
 
 // called when the user wishes to locate the nearest store based on their current location
 function onLocateByGeoLocation() {
+  // runs if locating by current geo coordinates
+  // will not run if the user doesn't allow the browser to get the current location
   let geoSuccess = (position) => {
     const currentLocationCoords = {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
     const locationsData = window.storeLocations;
+    // sort the locations by their distance closest to the user
     quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
     gotoLocations(locationsData, currentLocationCoords);
     clearLocations();
     displayLocations(locationsData);
-    const map = document.getElementById('map');
-    map.scrollIntoView();
+    document.getElementById('map').scrollIntoView();
   }
   let geoError = (error) => {
     console.error(error);
+    alert('geo locate error');
   }
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(geoSuccess);

@@ -16,44 +16,9 @@
     <label>Upload CSV File</label>
     <input type="file" id="file-upload"/>
     <button onclick="convertStoreDataToJSON()">Convert Store Data to JSON</button>
-    <button onclick="convertBulkDataToJSON()">Convert Bulk Product Data to JSON</button>
     <script>
       function convertStoreDataToJSON() {
         convertDataToJSON('MasterLocations.json');
-      }
-      function convertBulkDataToJSON() {
-        const file = document.getElementById('file-upload').files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-          const csvText = reader.result;
-          const lines = csvText.split('\n');
-          console.log(lines);
-          lines.shift();
-          zipCodeLocations = [];
-          lines.forEach((item, i) => {
-            const locationData = item.split(',');
-            const data = {
-              zipcode: locationData[0],
-              county: locationData[1],
-              zone: locationData[2],
-              region: locationData[3],
-              state: locationData[4],
-              accountManager: locationData[5],
-              phone: locationData[6],
-              email: locationData[7],
-            };
-            zipCodeLocations.push(data);
-          });
-          const hiddenAnchor = document.createElement('a');
-          const jsonText = JSON.stringify(zipCodeLocations);
-          const blob = new Blob([jsonText], {
-            type: 'text/json'
-          });
-          hiddenAnchor.href = URL.createObjectURL(blob);
-          hiddenAnchor.download = 'ZipCodeAccountManagerLookup.json';
-          hiddenAnchor.click();
-        }
-        reader.readAsText(file);
       }
       function convertDataToJSON(filename) {
         const file = document.getElementById('file-upload').files[0];
@@ -103,7 +68,7 @@
       }
 
       // generates the coordinates for each of the locations
-      // sometimes the google api doesn't return a result, so it tries 3 times to get the location coords if the google api doesn't return a result
+      // sometimes the google api doesn't return a result, so it tries 3 times to get the location's geo coordinates if the google api doesn't return a result
       function generateLocationCoords(locations) {
         return Promise.all(locations.map((location, index) => fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
             ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
@@ -112,7 +77,6 @@
               try{
                 locations[index].coords = data.results[0].geometry.location;
               } catch(e) {
-                  console.log('trying again');
                   fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
                   ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
                   .then(res => res.json())
