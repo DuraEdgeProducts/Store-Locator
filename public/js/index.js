@@ -26,11 +26,23 @@ function initMap() {
   let map = new google.maps.Map(document.getElementById('map'), mapProp);
 }
 
+function createGoogleMapsURL(location) {
+  return `https://www.google.com/maps/search/?api=1&query=${location.streetNumber} ${location.route} ${location.aptSuite}, ${location.locality}, ${location.state}, ${location.zipcode}`;
+}
+
+function createWindowContent(location) {
+  return location.name + '</br>' +
+  location.streetNumber + ' ' + location.route + ', ' + location.zipcode + '</br>'
+  + `<a href="${'http://'+location.website}" target="_blank">${location.website}</a>` + '</br>'
+  + `<a href="${createGoogleMapsURL(location)}" target="_blank">View in Google Maps</a>`;
+}
+
 // receives the latitude and longitude and goes to those coordinates on the map
 function gotoLocations(locations, currentCoords) {
   const numVisibleLocations = 5;
   const map = new google.maps.Map(document.getElementById('map'));
   const bounds = new google.maps.LatLngBounds();
+  const infoWindows = [];
   const currentLocationMarker = new google.maps.Marker({
     position: currentCoords,
     map: map,
@@ -39,15 +51,28 @@ function gotoLocations(locations, currentCoords) {
   bounds.extend(currentLocationMarker.getPosition());
   for(let i = 0; i < numVisibleLocations; i++) {
     const loc = new google.maps.LatLng(locations[i].coords.lat, locations[i].coords.lng);
+    const infoWindow = new google.maps.InfoWindow({
+      content: createWindowContent(locations[i])
+    });
     const marker = new google.maps.Marker({
       position: loc,
-      map: map
+      map: map,
     });
+    const infoWindowOptions = {
+      anchor: marker,
+      map: map,
+      shouldFocus: false
+    };
+    marker.addListener('click', () => {
+      infoWindow.open(infoWindowOptions);
+    });
+    infoWindows.push({window: infoWindow, options: infoWindowOptions});
     bounds.extend(loc); // extends the map boundaries to fit the new location
   }
   // center and fit the map around all the markers
   map.fitBounds(bounds);
   map.panToBounds(bounds);
+  return infoWindows;
 }
 // returns the latitude and longitude from a zip code
 async function getLatLongFromZip(zip) {
@@ -112,10 +137,8 @@ async function onLocateByZip() {
   const currentLocationCoords = await getLatLongFromZip(zip);
   const locationsData = window.storeLocations;
   quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-  gotoLocations(locationsData, currentLocationCoords);
-  clearLocations();
-  displayLocations(locationsData);
-  document.getElementById('map').scrollIntoView();
+  const infoWindows = gotoLocations(locationsData, currentLocationCoords);
+  displayLocations(locationsData, infoWindows);
 }
 
 // called when the user wishes to locate the nearest store based on their current location
@@ -130,10 +153,8 @@ function onLocateByGeoLocation() {
     const locationsData = window.storeLocations;
     // sort the locations by their distance closest to the user
     quickSort(currentLocationCoords, locationsData, 0, locationsData.length-1);
-    gotoLocations(locationsData, currentLocationCoords);
-    clearLocations();
-    displayLocations(locationsData);
-    document.getElementById('map').scrollIntoView();
+    const infoWindows = gotoLocations(locationsData, currentLocationCoords);
+    displayLocations(locationsData, infoWindows);
   }
   let geoError = (error) => {
     console.error(error);
@@ -146,23 +167,31 @@ function onLocateByGeoLocation() {
   }
 }
 
-// adds the location cards to the document
-function displayLocations(locations) {
-  const yourLocation = document.getElementById('your-location');
-  yourLocation.style.display = 'flex';
-  const locationOptions = document.getElementById('location-options');
-  for(let i = 0; i < 5; i++) {
-    const locationCard = generateLocationCard(locations[i]);
-    locationOptions.appendChild(locationCard);
-  }
-}
-
 // clears the location cards from the screen to prepare for the next query
 function clearLocations() {
   const locationOptions = document.getElementById('location-options');
   while(locationOptions.lastChild) {
     locationOptions.removeChild(locationOptions.lastChild);
   }
+}
+
+// adds the location cards to the document
+function displayLocations(locations, infoWindows) {
+  const numberOfVisibleLocations = 5;
+  const yourLocation = document.getElementById('your-location');
+  yourLocation.style.display = 'flex';
+  const locationOptions = document.getElementById('location-options');
+  if(locationOptions === null) return;
+  clearLocations();
+  for(let i = 0; i < numberOfVisibleLocations; i++) {
+    const locationCard = generateLocationCard(locations[i]);
+    locationCard.onclick = () => {
+      infoWindows[i].window.open(infoWindows[i].options);
+      document.getElementById('map').scrollIntoView();
+    }
+    locationOptions.appendChild(locationCard);
+  }
+  document.getElementById('map').scrollIntoView();
 }
 
 // generates the html for a location card based on the information in the location json object and returns the container
@@ -176,7 +205,7 @@ function generateLocationCard(location) {
   const name = document.createElement("h2");
   name.textContent = location.name;
   const address = document.createElement("p");
-  const streetAddress = `${location.streetNumber} ${location.route} ${location.aptSuite}`;
+  const streetAddress = `${location.streetNumber} ${location.route} ${location.aptSuite} `;
   address.textContent = streetAddress;
   const localityAddress = `${location.locality}, ${location.state}, ${location.zipcode}`;
   address.textContent += localityAddress
@@ -184,7 +213,7 @@ function generateLocationCard(location) {
   website.textContent = location.website;
   website.href = `http://${location.website}`;
   website.target = '_blank';
-  const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${streetAddress}, ${localityAddress}`;
+  const googleMapsURL = createGoogleMapsURL(location);
   const googleMapsLink = document.createElement("a");
   googleMapsLink.href = googleMapsURL;
   googleMapsLink.textContent = "   View in Google Maps";

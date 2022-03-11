@@ -1,0 +1,34 @@
+<!--
+  Author: Adam Poper
+  Organization: DuraEdge Products Inc.
+  Date: 3/11/22
+  File: index.html
+  Purpose: This is the frontent HTML for the website version of the store-locator app
+-->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>DuraEdge Store Locator</title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="content">
+      <div class="input-content">
+        <label>Zip Code: </label>
+        <input type="text" id="zip-input">
+        <button onclick="onLocateByZip()">Locate By Zip Code</button>
+        <h2>Or</h2>
+        <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+      </div>
+      <div id="map" class="map"></div>
+      <div id="your-location"><img src='./assets/green-marker.png' /><p>Your Location</p></div>    
+    </div>
+    <script type="text/javascript" src="./js/index.js"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw&callback=initMap"></script>
+  </body>
+</html>

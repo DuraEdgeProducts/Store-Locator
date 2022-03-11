@@ -15,3 +15,7 @@ app.get('/bulk-product-distributor', (req, res) => {
 app.get('/data/zipcodeaccountmanagerlookup.json', (req, res) => {
   res.sendFile(__dirname + '/public/ZipCodeAccountManagerLookup.json');
 });
+
+app.get('/websiteoptimized', (req, res) => {
+  res.sendFile(__dirname + '/public/websitestorelocator.html');
+});

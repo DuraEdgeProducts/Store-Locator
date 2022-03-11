@@ -85,6 +85,10 @@ html, body {
   border-radius: 8px;
 }
 
+.location-card:hover{
+  cursor: pointer;
+}
+
 .location-card img{
   width: 100px;
   height: auto;
@@ -217,6 +221,12 @@ html, body {
 @media only screen and (max-width: 800px) {
   .content {
     width: 100%;
+  }
+}
+
+@media only screen and (max-width: 665px) {
+  .location-address-info h2 {
+    line-height: 1;
   }
 }
 
