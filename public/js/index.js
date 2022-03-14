@@ -33,7 +33,7 @@ function createGoogleMapsURL(location) {
 function createWindowContent(location) {
   return location.name + '</br>' +
   location.streetNumber + ' ' + location.route + ', ' + location.zipcode + '</br>'
-  + `<a href="${'http://'+location.website}" target="_blank">${location.website}</a>` + '</br>'
+  + `<a href="${'http://'+location.website}" target="_blank">${location.website}</a>` + '</br></br>'
   + `<a href="${createGoogleMapsURL(location)}" target="_blank">View in Google Maps</a>`;
 }
 
