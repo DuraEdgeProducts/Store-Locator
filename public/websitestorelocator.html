@@ -19,14 +19,18 @@
   <body>
     <div class="content">
       <div class="input-content">
-        <label>Zip Code: </label>
-        <input type="text" id="zip-input">
-        <button onclick="onLocateByZip()">Locate By Zip Code</button>
-        <h2>Or</h2>
-        <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+        <div id="zip-input">
+          <label>Zip Code: </label>
+          <input type="text" id="zip-input">
+        </div>
+        <div id="locate-buttons">
+          <button onclick="onLocateByZip()">Locate By Zip Code</button>
+          <h2>Or</h2>
+          <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+        </div>
       </div>
       <div id="map" class="map"></div>
-      <div id="your-location"><img src='./assets/green-marker.png' /><p>Your Location</p></div>    
+      <div id="your-location"><img src='./assets/green-marker.png' /><p>Your Location</p></div>
     </div>
     <script type="text/javascript" src="./js/index.js"></script>
     <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw&callback=initMap"></script>

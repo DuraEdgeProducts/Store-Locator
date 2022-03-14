@@ -161,6 +161,13 @@ html, body {
   margin-right: 10px;
 }
 
+#locate-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
 @media only screen and (max-width: 1500px) {
   .location-options {
     width: 80%;
@@ -227,6 +234,10 @@ html, body {
 @media only screen and (max-width: 665px) {
   .location-address-info h2 {
     line-height: 1;
+  }
+  .input-content {
+    display: flex;
+    flex-direction: column;
   }
 }
 

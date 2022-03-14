@@ -24,11 +24,15 @@
         <h1>Store Locator</h1>
       </div>
       <div class="input-content">
-        <label>Zip Code: </label>
-        <input type="text" id="zip-input">
-        <button onclick="onLocateByZip()">Locate By Zip Code</button>
-        <h2>Or</h2>
-        <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+        <div id="zip-input">
+          <label>Zip Code: </label>
+          <input type="text" id="zip-input">
+        </div>
+        <div id="locate-buttons">
+          <button onclick="onLocateByZip()">Locate By Zip Code</button>
+          <h2>Or</h2>
+          <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
+        </div>
       </div>
       <div id="map" class="map"></div>
       <div id="your-location"><img src='./assets/green-marker.png' /><p>Your Location</p></div>
