@@ -19,13 +19,13 @@
   <body>
     <div class="content">
       <div class="input-content">
-        <div>
-          <label>Zip Code: </label>
+        <div id="zip-code-label-input">
+          <label id="zip-code-label">ZIP CODE: </label>
           <input type="text" id="zip-input">
         </div>
         <div id="locate-buttons">
           <button onclick="onLocateByZip()">Locate By Zip Code</button>
-          <h2>Or</h2>
+          <h2>OR</h2>
           <button onclick="onLocateByGeoLocation()" id="current-position-button">Locate by Current Position</button>
         </div>
       </div>

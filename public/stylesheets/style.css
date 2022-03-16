@@ -168,6 +168,29 @@ html, body {
   justify-content: space-around;
 }
 
+#locate-buttons h2 {
+  font-size: 24px;
+  font-family: Arial;
+  font-weight: bold;
+}
+
+#zip-code-label-input {
+  align-content: center;
+}
+
+#zip-code-label {
+  font-weight: bold;
+  margin-right: 50px;
+}
+
+#zip-input {
+  height: 30px;
+  width: 90px;
+  border-width: 1px;
+  border-color: #E4E4E4;
+
+}
+
 @media only screen and (max-width: 1500px) {
   .location-options {
     width: 80%;
