@@ -81,8 +81,12 @@ html, body {
   background-color: #F2EDED;
   display: flex;
   flex-direction: row;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
+}
+
+.location-card p {
+  line-height: 1;
 }
 
 .location-card:hover{
@@ -91,7 +95,9 @@ html, body {
 
 .location-card img{
   width: 100px;
+  max-height: 120px;
   height: auto;
+  align-self: center;
 }
 
 .location-card a {
