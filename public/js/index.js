@@ -40,7 +40,12 @@ function createWindowContent(location) {
 // receives the latitude and longitude and goes to those coordinates on the map
 function gotoLocations(locations, currentCoords) {
   const numVisibleLocations = 5;
-  const map = new google.maps.Map(document.getElementById('map'));
+  let mapProp = {   
+    center: new google.maps.LatLng({lat: locations[0].coords.lat, lng: locations[0].coords.lng}),
+    zoom: 8,
+    scaleControl: true
+  };
+  let map = new google.maps.Map(document.getElementById('map'), mapProp);
   const bounds = new google.maps.LatLngBounds();
   const infoWindows = [];
   const currentLocationMarker = new google.maps.Marker({
@@ -67,10 +72,10 @@ function gotoLocations(locations, currentCoords) {
       infoWindow.open(infoWindowOptions);
     });
     infoWindows.push({window: infoWindow, options: infoWindowOptions});
-    bounds.extend(loc); // extends the map boundaries to fit the new location
+    bounds.extend(marker.getPosition()); // extends the map boundaries to fit the new location
+    map.fitBounds(bounds);
   }
   // center and fit the map around all the markers
-  map.fitBounds(bounds);
   map.panToBounds(bounds);
   return infoWindows;
 }
@@ -178,10 +183,9 @@ function clearLocations() {
 // adds the location cards to the document
 function displayLocations(locations, infoWindows) {
   const numberOfVisibleLocations = 5;
-  const yourLocation = document.getElementById('your-location');
-  yourLocation.style.display = 'flex';
   const locationOptions = document.getElementById('location-options');
   if(locationOptions === null) return;
+  document.getElementById('your-location').style.display = 'flex';
   clearLocations();
   for(let i = 0; i < numberOfVisibleLocations; i++) {
     const locationCard = generateLocationCard(locations[i]);

@@ -16,6 +16,10 @@ app.get('/data/zipcodeaccountmanagerlookup.json', (req, res) => {
   res.sendFile(__dirname + '/public/ZipCodeAccountManagerLookup.json');
 });
 
-app.get('/websiteoptimized', (req, res) => {
+app.get('/websitestorelocator', (req, res) => {
   res.sendFile(__dirname + '/public/websitestorelocator.html');
+});
+
+app.get('/test', (req, res) => {
+  res.sendFile(__dirname + '/public/test.html')
 });
