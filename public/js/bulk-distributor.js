@@ -34,7 +34,7 @@ function lookupZip(zipcode) {
   }
 }
 
-// when the uzer wishes to locate by a zip code
+// when the user wishes to locate by a zip code
 function onLocateByZip() {
   const zipcode = document.getElementById('zip-input').value;
   lookupZip(zipcode);
@@ -48,7 +48,7 @@ function onLocateByGeoLocation() {
       lng: position.coords.longitude
     };
     // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc`)
     .then(res => res.json())
     .then(data => {
       const zipcode = data.results[0].address_components[6].short_name; // zipcode

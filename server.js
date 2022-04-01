@@ -20,6 +20,10 @@ app.get('/websitestorelocator', (req, res) => {
   res.sendFile(__dirname + '/public/websitestorelocator.html');
 });
 
+app.get('/fileconverter', (req, res) => {
+  res.sendFile(__dirname + '/public/file-converter.html');
+})
+
 app.get('/test', (req, res) => {
   res.sendFile(__dirname + '/public/test.html')
 });

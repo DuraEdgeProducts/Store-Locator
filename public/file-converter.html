@@ -2,7 +2,7 @@
   Author: Adam Poper
   Organization: DuraEdge Products, Inc.
   Name of File: file-converter.html
-  Date: 2/16/22
+  Date: 4/1/22
   Purpose: this is the file converter program used to convert a csv file to json and get the coordinates for each location
 -->
 
@@ -11,11 +11,34 @@
   <head>
     <meta charset="utf-8">
     <title>file-converter</title>
+    <style type="stylesheet/css">
+      #wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      #uploader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right: 50%;
+      }
+      h1 {
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-    <label>Upload CSV File</label>
-    <input type="file" id="file-upload"/>
-    <button onclick="convertStoreDataToJSON()">Convert Store Data to JSON</button>
+    <div id="wrapper">
+      <div id="uploader">
+        <label>Upload CSV File</label>
+        <input type="file" id="file-upload"/>
+      </div>
+      <button onclick="convertStoreDataToJSON()">Convert Store Data to JSON</button>
+    </div>
     <script>
       function convertStoreDataToJSON() {
         convertDataToJSON('MasterLocations.json');
@@ -71,21 +94,21 @@
       // sometimes the google api doesn't return a result, so it tries 3 times to get the location's geo coordinates if the google api doesn't return a result
       function generateLocationCoords(locations) {
         return Promise.all(locations.map((location, index) => fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
-            ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+            ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc`)
             .then(res => res.json())
             .then(data => {
               try{
                 locations[index].coords = data.results[0].geometry.location;
               } catch(e) {
                   fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
-                  ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+                  ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc`)
                   .then(res => res.json())
                   .then(data => {
                     try{
                       locations[index].coords = data.results[0].geometry.location;
                     } catch(e1) {
                       fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${location.streetNumber}+${location.route.replace(/ /g, '+')}
-                      ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`)
+                      ,+${location.locality.replace(/ /g, '+')},+${location.state}&key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc`)
                       .then(res => res.json())
                       .then(data => {
                         try{

@@ -81,7 +81,7 @@ function gotoLocations(locations, currentCoords) {
 }
 // returns the latitude and longitude from a zip code
 async function getLatLongFromZip(zip) {
-  const url = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw&components=postal_code:" + zip;
+  const url = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc&components=postal_code:" + zip;
   const res = await fetch(url);
   const data = await res.json();
   try {
@@ -94,7 +94,7 @@ async function getLatLongFromZip(zip) {
 // returns the latitude and longitude from a street address
 async function getLatLongFromAddress(streetNumber, route, locality, state) {
   // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAv_Tqy8l-X1k1fue0hggJ0orxoJQqz2mw`;
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${streetNumber}+${route.replace(/ /g, '+')},+${locality.replace(/ /g, '+')},+${state}&key=AIzaSyAh69RpB2N11xzoK36ybSv3K6dwpWPgjRc`;
   const res = await fetch(url);
   const data = await res.json();
   return data.results[0].geometry.location;
