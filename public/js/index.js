@@ -2,7 +2,7 @@
   Author: Adam Poper
   Organization: DuraEdge Products, Inc.
   File: index.js
-  Date: 3/4/22
+  Date: 4/4/22
   Purpose: this file contains all the algorithms and data processing functionality for the store locator application
 */
 
