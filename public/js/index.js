@@ -184,8 +184,8 @@ function clearLocations() {
 function displayLocations(locations, infoWindows) {
   const numberOfVisibleLocations = 5;
   const locationOptions = document.getElementById('location-options');
-  if(locationOptions === null) return;
   document.getElementById('your-location').style.display = 'flex';
+  if(locationOptions === null) return;
   clearLocations();
   for(let i = 0; i < numberOfVisibleLocations; i++) {
     const locationCard = generateLocationCard(locations[i]);

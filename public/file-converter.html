@@ -11,32 +11,26 @@
   <head>
     <meta charset="utf-8">
     <title>file-converter</title>
-    <style type="stylesheet/css">
-      #wrapper {
+    <style>
+      body{
+        font-family: Arial;
+      }
+      #uploader{
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-content: center;
-        margin-right: auto;
-        margin-left: auto;
+        align-items: center;
+        margin-top: 20%;
+        /* justify-content: center; */
       }
-      #uploader {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-right: 50%;
-      }
-      h1 {
-        text-align: center;
+      #file-upload{
+        margin-bottom:10px;
       }
     </style>
   </head>
-  <body>
-    <div id="wrapper">
-      <div id="uploader">
-        <label>Upload CSV File</label>
-        <input type="file" id="file-upload"/>
-      </div>
+  <body>    
+    <div id="uploader">
+      <h3>Upload CSV File</h3>
+      <input type="file" id="file-upload"/>
       <button onclick="convertStoreDataToJSON()">Convert Store Data to JSON</button>
     </div>
     <script>
