@@ -13,7 +13,10 @@ window.onload = loadLocationsFromJSON;
 // this is much faster because there are no calls to the google maps api when the app loads
 async function loadLocationsFromJSON() {
   window.storeLocations = [];
-  fetch('./data/MasterLocations.json').then(res => res.json()).then(data => {window.storeLocations = data;}).catch(err => console.error(err));
+  fetch('./data/MasterLocations.json')
+  .then(res => res.json())
+  .then(data => {window.storeLocations = data;})
+  .catch(err => console.error(err));
 }
 
 // callback function for initiating the map
@@ -88,6 +91,7 @@ async function getLatLongFromZip(zip) {
     return await data.results[0].geometry.location; // latitude and longitude
   } catch(e) {
       alert('Please Enter a Valid Zip Code');
+      throw e;
   }
 }
 
@@ -184,7 +188,7 @@ function clearLocations() {
 function displayLocations(locations, infoWindows) {
   const numberOfVisibleLocations = 5;
   const locationOptions = document.getElementById('location-options');
-  document.getElementById('your-location').style.display = 'flex';
+  document.getElementById('your-location').style.display = 'flex'; // makes the 'your-location' marker image below the map visible
   if(locationOptions === null) return;
   clearLocations();
   for(let i = 0; i < numberOfVisibleLocations; i++) {

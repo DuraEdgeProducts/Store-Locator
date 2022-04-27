@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="file-upload" onchange="onFileUpload()"/>
+    
+    <script type="text/javascript">
+        function onFileUpload() {
+            const file = document.getElementById('file-upload').files[0];
+            const reader = new FileReader();
+            const reps = [];
+            reader.onload = () => {
+                const csvText = reader.result;
+                const lines = csvText.split('\n');
+                lines.forEach((item, i) => {
+                    const line = item.split(',');
+                    const rep = {
+                        zipcode: line[1],
+                        county: line[2],
+                        zone: line[3],
+                        region: line[4],
+                        state: line[5],
+                        accountManager: line[6],
+                        phone: line[7],
+                        email: line[8]
+                    };
+                    reps.push(rep);
+                });
+                reps.shift();
+                reps.pop();
+                console.log(reps);
+                const hiddenAnchor = document.createElement("a");
+                const jsonText = JSON.stringify(reps);
+                const blob = new Blob([jsonText], {
+                    type: 'text/json'
+                });
+                hiddenAnchor.href = URL.createObjectURL(blob);
+                hiddenAnchor.download = 'ZipCodeAccountManagerLookup.json';
+                hiddenAnchor.click();
+            }
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
